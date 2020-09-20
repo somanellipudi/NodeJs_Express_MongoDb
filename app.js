@@ -1,11 +1,14 @@
-var createError = require('http-errors');
-var express = require('express');
-var path = require('path');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
+const createError = require('http-errors');
+const express = require('express');
+const path = require('path');
+const cookieParser = require('cookie-parser');
+const logger = require('morgan');
+const mongoose = require('mongoose')
+require('dotenv')
 
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
+const indexRouter = require('./routes/index');
+const usersRouter = require('./routes/users');
+const postsRouter = require('./routes/posts')
 
 var app = express();
 
@@ -19,8 +22,17 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+//connect to db
+//app.connect('mongodb+srv://soma:bellcoww@cluster0.eqfsc.mongodb.net/local?retryWrites=true&w=majority', () => console.log("connected db"))
+const dbConfig = require('./config/db');
+const connections = require('./config/connections');
+connections.connectToDb(dbConfig, 'Connected to Db');
+
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
+app.use('/posts', postsRouter);
+
+app.listen(8000);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
