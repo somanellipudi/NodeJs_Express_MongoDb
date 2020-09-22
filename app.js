@@ -9,6 +9,7 @@ require('dotenv')
 const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/users');
 const postsRouter = require('./routes/posts')
+const authRouter = require('./routes/auth')
 
 var app = express();
 
@@ -16,6 +17,7 @@ var app = express();
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
 
+// util middlewares
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -23,14 +25,15 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 //connect to db
-//app.connect('mongodb+srv://soma:bellcoww@cluster0.eqfsc.mongodb.net/local?retryWrites=true&w=majority', () => console.log("connected db"))
 const dbConfig = require('./config/db');
 const connections = require('./config/connections');
 connections.connectToDb(dbConfig, 'Connected to Db');
 
+//route middlewares
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/posts', postsRouter);
+app.use('/api/user', authRouter)
 
 app.listen(8000);
 

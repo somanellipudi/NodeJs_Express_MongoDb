@@ -1,13 +1,14 @@
 const express = require('express');
 const router = express.Router();
 const Post = require('../models/Post')
+const verify = require('../utils/verifyToken')
 
 
 
 /*
 get all posts
  */
-router.get('/', async (req, res) => {
+router.get('/', verify, async (req, res) => {
     try{
         const posts = await Post.find();
         res.json(posts)
@@ -41,7 +42,7 @@ router.post('/', async (req, res)  => {
 /*
 get a specific post
  */
-router.get('/:postId', async (req, res) =>
+router.get('/:postId', verify, async (req, res) =>
 {
     console.log("Message : postID : ", req.params.postId);
     const post = await Post.findById(req.params.postId);
